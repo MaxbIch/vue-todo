@@ -36,7 +36,7 @@
           class="px-3 py-2 rounded hover:bg-gray-100"
           active-class="bg-blue-100 text-blue-700 font-semibold"
       >
-        🎯 Ежедневные цели
+        🎯 Ежедневные
       </RouterLink>
 
     </nav>

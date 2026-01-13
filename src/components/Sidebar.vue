@@ -1,44 +1,74 @@
 <script setup>
-</script>
-<template>
-  <aside class="w-60 bg-white border-r p-4">
-    <h2 class="text-lg font-bold mb-6">
-      Моё приложение
-    </h2>
+defineProps({
+  open: Boolean,
+})
 
-    <nav class="flex flex-col gap-2">
+defineEmits(['close'])
+</script>
+
+<template>
+  <aside
+      class="
+      fixed lg:static
+      top-0 left-0
+      h-full
+      w-64
+      bg-white
+      border-r
+      z-50
+      transform
+      transition-transform
+      duration-300
+      ease-in-out
+      lg:translate-x-0
+    "
+      :class="open ? 'translate-x-0' : '-translate-x-full'"
+  >
+
+    <!-- HEADER (mobile) -->
+    <div class="h-14 flex items-center justify-between px-4 border-b lg:hidden">
+      <span class="font-semibold">Меню</span>
+      <button @click="$emit('close')" class="text-xl">
+        ✕
+      </button>
+    </div>
+
+    <!-- NAV -->
+    <nav class="p-4 space-y-2">
+
       <RouterLink
-          to="/"
-          class="px-3 py-2 rounded hover:bg-gray-100"
-          active-class="bg-blue-100 text-blue-700 font-semibold"
+          to="/todo"
+          class="block px-3 py-2 rounded hover:bg-blue-100"
+          @click="$emit('close')"
       >
-        📝 Список дел
+        Todo
       </RouterLink>
 
       <RouterLink
           to="/notes"
-          class="px-3 py-2 rounded hover:bg-gray-100"
-          active-class="bg-blue-100 text-blue-700 font-semibold"
+          class="block px-3 py-2 rounded hover:bg-blue-100"
+          @click="$emit('close')"
       >
-        📌 Заметки
+        Заметки
       </RouterLink>
 
       <RouterLink
           to="/calendar"
-          class="px-3 py-2 rounded hover:bg-gray-100"
-          active-class="bg-blue-100 text-blue-700 font-semibold"
+          class="block px-3 py-2 rounded hover:bg-blue-100"
+          @click="$emit('close')"
       >
-        📅 Календарь
+        Напоминания
       </RouterLink>
 
       <RouterLink
-          to="/habit"
-          class="px-3 py-2 rounded hover:bg-gray-100"
-          active-class="bg-blue-100 text-blue-700 font-semibold"
+          to="/habits"
+          class="block px-3 py-2 rounded hover:bg-blue-100"
+          @click="$emit('close')"
       >
-        🎯 Ежедневные
+        Привычки
       </RouterLink>
 
     </nav>
+
   </aside>
 </template>

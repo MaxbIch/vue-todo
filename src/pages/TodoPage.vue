@@ -53,7 +53,6 @@ function addTask() {
       ? createdAt + totalMinutes * 60 * 1000
       : null
 
-  // 👇 ВАЖНО: добавляем В НАЧАЛО
   tasks.value.unshift({
     id: createdAt,
     text: newTask.value,
@@ -124,7 +123,7 @@ function formatDate(ts) {
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full max-w-5xl mx-auto px-4 sm:px-6">
 
     <!-- HEADER -->
     <h1 class="text-2xl font-bold mb-6">
@@ -132,7 +131,7 @@ function formatDate(ts) {
     </h1>
 
     <!-- ADD TASK -->
-    <div class="mb-6 max-w-4xl space-y-3">
+    <div class="mb-6 space-y-3">
       <input
           v-model="newTask"
           placeholder="Введите задачу"
@@ -152,14 +151,14 @@ function formatDate(ts) {
 
       <button
           @click="addTask"
-          class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 w-full sm:w-auto"
       >
         Добавить задачу
       </button>
     </div>
 
     <!-- TASK LIST -->
-    <div class="flex flex-col gap-3 max-w-4xl">
+    <div class="flex flex-col gap-3">
 
       <div
           v-for="(task, index) in tasks"
@@ -169,10 +168,10 @@ function formatDate(ts) {
       >
         <div class="flex gap-3 items-start">
 
-          <!-- 🔢 НОМЕР -->
-          <span class="text-sm font-semibold text-gray-500 w-6 text-right">
+          <!-- NUMBER -->
+          <div class="text-gray-400 font-semibold mt-1">
             {{ index + 1 }}.
-          </span>
+          </div>
 
           <input
               type="checkbox"
@@ -181,7 +180,6 @@ function formatDate(ts) {
           />
 
           <div class="flex-1">
-            <!-- TEXT / EDIT -->
             <span
                 v-if="!task.isEditing"
                 class="block text-sm whitespace-pre-wrap break-words"
@@ -209,12 +207,10 @@ function formatDate(ts) {
           </button>
         </div>
 
-        <!-- META -->
         <div class="mt-2 text-xs text-gray-400">
           Добавлено: {{ formatDate(task.createdAt) }}
         </div>
 
-        <!-- EDIT -->
         <button
             v-if="!task.isEditing"
             @click="startEditing(task)"
@@ -223,7 +219,6 @@ function formatDate(ts) {
           редактировать
         </button>
 
-        <!-- TIMER -->
         <div
             v-if="timeLeft(task)"
             class="mt-1 text-xs text-gray-500"
@@ -233,18 +228,17 @@ function formatDate(ts) {
       </div>
 
     </div>
-
   </div>
 
-  <!-- TIME PICKER -->
+  <!-- TIME PICKER (iOS STYLE) -->
   <div
       v-if="showTimePicker"
-      class="fixed inset-0 bg-black/40 flex items-center justify-center"
+      class="fixed inset-0 bg-black/40 flex items-end sm:items-center justify-center z-50"
   >
-    <div class="bg-white rounded-xl w-[220px] h-[300px] p-4">
+    <div class="bg-white w-full sm:w-[320px] rounded-t-2xl sm:rounded-2xl p-4">
 
-      <div class="flex justify-between mb-2">
-        <span class="text-sm font-semibold">Время</span>
+      <div class="flex justify-between items-center mb-4">
+        <span class="font-semibold">Длительность</span>
         <button
             class="text-blue-600"
             @click="showTimePicker = false"
@@ -253,43 +247,51 @@ function formatDate(ts) {
         </button>
       </div>
 
-      <div class="flex justify-between pl-6 pr-5 text-sm text-gray-500">
-        <div>Часы</div>
-        <div>Минуты</div>
-      </div>
+      <div class="flex justify-center gap-6">
 
-      <div class="flex justify-between mt-4">
-        <div class="w-1/2 h-[224px] overflow-y-scroll snap-y snap-mandatory">
-          <div
-              v-for="h in hoursList"
-              :key="h"
-              class="h-8 flex items-center justify-center snap-center cursor-pointer"
-              :class="{
-              'text-blue-600 font-bold': h === selectedHours,
-              'text-gray-400': h !== selectedHours
-            }"
-              @click="selectedHours = h"
-          >
-            {{ h }}
+        <!-- HOURS -->
+        <div class="relative w-24 h-48 overflow-hidden">
+          <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute top-1/2 -translate-y-1/2 h-10 w-full border-y"></div>
+          </div>
+
+          <div class="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-none">
+            <div
+                v-for="h in hoursList"
+                :key="h"
+                class="h-10 flex items-center justify-center snap-center cursor-pointer"
+                :class="h === selectedHours
+                ? 'text-blue-600 font-bold text-lg'
+                : 'text-gray-400'"
+                @click="selectedHours = h"
+            >
+              {{ h }} ч
+            </div>
           </div>
         </div>
 
-        <div class="w-1/2 h-[224px] overflow-y-scroll snap-y snap-mandatory">
-          <div
-              v-for="m in minutesList"
-              :key="m"
-              class="h-8 flex items-center justify-center snap-center cursor-pointer"
-              :class="{
-              'text-blue-600 font-bold': m === selectedMinutes,
-              'text-gray-400': m !== selectedMinutes
-            }"
-              @click="selectedMinutes = m"
-          >
-            {{ m }}
+        <!-- MINUTES -->
+        <div class="relative w-24 h-48 overflow-hidden">
+          <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute top-1/2 -translate-y-1/2 h-10 w-full border-y"></div>
+          </div>
+
+          <div class="h-full overflow-y-scroll snap-y snap-mandatory scrollbar-none">
+            <div
+                v-for="m in minutesList"
+                :key="m"
+                class="h-10 flex items-center justify-center snap-center cursor-pointer"
+                :class="m === selectedMinutes
+                ? 'text-blue-600 font-bold text-lg'
+                : 'text-gray-400'"
+                @click="selectedMinutes = m"
+            >
+              {{ m }} м
+            </div>
           </div>
         </div>
-      </div>
 
+      </div>
     </div>
   </div>
 </template>

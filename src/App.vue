@@ -1,34 +1,53 @@
 <script setup>
-import Sidebar from './components/Sidebar.vue'
-import { useNotifications } from '@/composables/useNotifications'
+import { ref } from 'vue'
+import { RouterView } from 'vue-router'
+import Sidebar from '@/components/Sidebar.vue'
 
-const { activeAlert, goToReminder } = useNotifications()
+const sidebarOpen = ref(false)
+
+function openSidebar() {
+  sidebarOpen.value = true
+}
+
+function closeSidebar() {
+  sidebarOpen.value = false
+}
 </script>
 
 <template>
-  <div class="min-h-screen flex bg-gray-100">
+  <div class="min-h-screen flex bg-gray-100 relative">
 
-    <Sidebar />
+    <!-- SIDEBAR -->
+    <Sidebar
+        :open="sidebarOpen"
+        @close="closeSidebar"
+    />
 
-    <main class="flex-1 p-6">
-      <RouterView />
-    </main>
-
-    <!-- GLOBAL ALERT -->
+    <!-- OVERLAY (mobile/tablet) -->
     <div
-        v-if="activeAlert"
-        class="fixed bottom-6 right-6 bg-blue-600 text-white px-5 py-4 rounded-xl shadow-xl z-50"
-    >
-      <div class="font-semibold mb-1">⏰ Напоминание</div>
-      <div class="cursor-pointer" @click="goToReminder(activeAlert)">
-        {{ activeAlert.text }}
-      </div>
-      <button
-          class="mt-2 text-xs underline"
-          @click="activeAlert = null"
-      >
-        закрыть
-      </button>
+        v-if="sidebarOpen"
+        @click="closeSidebar"
+        class="fixed inset-0 bg-black/40 z-40 lg:hidden"
+    />
+
+    <!-- CONTENT -->
+    <div class="flex-1 flex flex-col">
+
+      <!-- TOP BAR -->
+      <header class="h-14 bg-white border-b flex items-center px-4 lg:hidden">
+        <button
+            @click="openSidebar"
+            class="text-2xl"
+        >
+          ☰
+        </button>
+      </header>
+
+      <!-- PAGE -->
+      <main class="flex-1 p-4 sm:p-6">
+        <RouterView />
+      </main>
+
     </div>
 
   </div>
